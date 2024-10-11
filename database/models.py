@@ -46,9 +46,10 @@ async def add_category():
     
 async def add_foods():
     async with async_session() as session:
-        foods = Foods(name = 'Цезарь',img = 'img/zesar.jpg',description = 'Цезарь(не Гай Юлий)',price = 300,gramm = 50,component = 'салат, курица, помидоры черри,соус цезарь, пармезан, сухарики',category_id = 4)
+        foods = Foods(name = 'Цезарь',img = 'imgae/zesar.jpeg',description = 'Цезарь(не Гай Юлий)',price = 300,gramm = 50,component = 'салат, курица, помидоры черри,соус цезарь, пармезан, сухарики',category_id = 4)
 
         session.add(foods)
         await session.commit()
         await session.refresh(foods)
         return foods
+    
