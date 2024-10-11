@@ -1,0 +1,6 @@
+venv
+venv/
+les
+__pycache__
+database
+config.py
