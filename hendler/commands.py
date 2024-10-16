@@ -4,6 +4,7 @@ from aiogram.filters import CommandStart, Command
 from random import randint
 from hendler.keyboards import *
 
+
 router = Router()
 
 @router.message(Command('start'))
@@ -14,17 +15,32 @@ async def satus(message: Message):
 
 @router.message(F.text == 'Menu')
 async def menu(message: Message):
-    await message.answer('вот ваше меню',reply_markup=menu_kb)
+    await message.answer('выберите меню')
 
-@router.callback_query(F.data == 'чечевица')
-async def send_random_value(callback: CallbackQuery):
-    await callback.message.answer('этого блока пока нет')
 
 @router.message(F.text == 'Category')
-async def category(message: Message):
-    await message.answer('вот ваша категория',reply_markup=Category_kb)
+async def menu(message: Message):
+    await message.answer('выберите категория',reply_markup=await get_categorys_kb())
 
 
+
+@router.callback_query(F.data.startswith('category_'))
+async def send_random(callback: CallbackQuery):
+    data = callback.data.split('_')+get_foods_kb()
+    await callback.message.answer(data)
+
+# @router.callback_query(F.data == 'чечевица')
+# async def send_random_value(callback: CallbackQuery):
+#     await callback.message.answer('этого блока пока нет')
+
+# @router.message(Command('num'))
+# async def num(message: Message):
+#     await message.answer('Выберите номер',reply_markup=await get_inline_keyboard())
+
+# @router.callback_query(F.data.startswith('world_'))
+# async def send_random(callback: CallbackQuery):
+#     data = callback.data.split('_')[1]
+#     await callback.message.answer(data)
 
 
 
