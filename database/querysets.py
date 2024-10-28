@@ -34,3 +34,15 @@ async def add_category(text):
         await session.refresh(category)
         return category
     
+async def add_food_db(data):
+    async with async_session() as session:
+        session.add(data)
+        await session.commit()
+        await session.refresh(data)
+        return data
+
+async def delete_food_db(data):
+    async with async_session() as session:
+        await session.execute(delete(Foods).where(Foods.id == data.id))
+        await session.commit()
+        return data

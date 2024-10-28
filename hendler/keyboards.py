@@ -20,6 +20,15 @@ async def get_categories_kb():
         ))
     return builder.adjust(2).as_markup()
 
+async def get_categories_kb2():
+    categories = await get_categories()
+    builder = InlineKeyboardBuilder()
+    for category in categories:
+        builder.add(InlineKeyboardButton(
+            text= category.name , callback_data=f'category2_{category.id}'
+        ))
+    return builder.adjust(2).as_markup()
+
 async def get_foods_kb():
     foods = await get_foods()
     builder = InlineKeyboardBuilder()
