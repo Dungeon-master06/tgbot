@@ -3,27 +3,84 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from database.querysets import *
 
 kb = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text='Menu')],
-    [KeyboardButton(text='Category')],
-    ],resize_keyboard=True,one_time_keyboard=True,input_field_placeholder="Выберите пункт")
+        [KeyboardButton(text="menu")],
+        [KeyboardButton(text="category")]   
+    ],
+    resize_keyboard=True,
+    one_time_keyboard=True,
+    input_field_placeholder="Выберите пункт меню")
 
 
-async def get_categorys_kb():
-    categorys = await get_categorys()
+async def get_categories_kb():
+    categories = await get_categories()
     builder = InlineKeyboardBuilder()
-    for category in categorys:
-        builder.add(InlineKeyboardButton(text=category.name,callback_data=f'category_{category.id}'))
+    for category in categories:
+        builder.add(InlineKeyboardButton(
+            text= category.name , callback_data=f'category_{category.id}'
+        ))
     return builder.adjust(2).as_markup()
-
 
 async def get_foods_kb():
-    foods = await get_foods_by_category()
+    foods = await get_foods()
     builder = InlineKeyboardBuilder()
     for food in foods:
-        builder.add(InlineKeyboardButton(text=food.name,callback_data=f'food_{food.id}'))
+        builder.add(InlineKeyboardButton(
+            text= food.name , callback_data=f'food_{food.id}'
+        ))
+    return builder.adjust(2).as_markup()
+
+async def get_products_kb(category_id):
+    products = await get_foods_by_category(category_id)
+    builder = InlineKeyboardBuilder()
+    for product in products:    
+        builder.add(InlineKeyboardButton(
+            text= product.name , callback_data=f'product_{product.id}'
+        ))
+    builder.add(InlineKeyboardButton(text='Назад',callback_data=f'back'))
     return builder.adjust(2).as_markup()
 
 
+
+async def back_kb(category_id):
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text='Купить',callback_data=f'buy_{category_id}'))
+    builder.add(InlineKeyboardButton(text='Назад к категориям',callback_data=f'back_{category_id}'))
+    builder.add(InlineKeyboardButton(text='выбрать категории',callback_data=f'back'))
+    return builder.adjust(2).as_markup()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# async def get_categorys_kb():
+#     categorys = await get_categorys()
+#     builder = InlineKeyboardBuilder()
+#     for category in categorys:
+#         builder.add(InlineKeyboardButton(text=category.name,callback_data=f'category_{category.id}'))
+#     return builder.adjust(2).as_markup()
 
 # Category_kb = ReplyKeyboardMarkup(keyboard=[
 #     [KeyboardButton(text='супы')],

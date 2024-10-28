@@ -1,33 +1,85 @@
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, LinkPreviewOptions
+from aiogram import Router, F, types
+from aiogram.types import Message, CallbackQuery, LinkPreviewOptions, FSInputFile
 from aiogram.filters import CommandStart, Command
-from random import randint
 from hendler.keyboards import *
+from database.querysets import *
 
 
 router = Router()
 
-@router.message(Command('start'))
-async def satus(message: Message):
-    await message.answer('Привет я бот по доставке еды, чем я могу вам помочь?',reply_markup=kb)
-
-
-
-@router.message(F.text == 'Menu')
+@router.message(Command("start"))
+async def start(message:Message):
+    await message.answer("Привет я бот по доставке еды чем могу помочь?",
+                         reply_markup=kb)
+    
+    
+@router.message(F.text  == 'menu')
 async def menu(message: Message):
-    await message.answer('выберите меню')
+    await message.answer('Выберите пункт меню', 
+                         reply_markup= await get_foods_kb())
 
-
-@router.message(F.text == 'Category')
+@router.message(F.text  == 'category')
 async def menu(message: Message):
-    await message.answer('выберите категория',reply_markup=await get_categorys_kb())
-
+    await message.answer('Выберите категорию',
+                         reply_markup= await get_categories_kb())
 
 
 @router.callback_query(F.data.startswith('category_'))
-async def send_random(callback: CallbackQuery):
-    data = callback.data.split('_')+get_foods_kb()
-    await callback.message.answer(data)
+async def category(callback: CallbackQuery):
+    category_id = callback.data.split('_')[1]
+    await callback.message.delete()
+    await callback.message.answer("выберите блюдо", 
+                reply_markup=  await get_products_kb(category_id))
+    
+@router.callback_query(F.data ==('back'))
+async def back_to_category(callback: CallbackQuery):
+    await callback.message.delete()
+    await callback.message.answer('Выберите категорию',
+                         reply_markup= await get_categories_kb())
+
+
+@router.callback_query(F.data.startswith('back_'))
+async def category(callback: CallbackQuery):
+    category_id = callback.data.split('_')[1]
+    await callback.message.delete()
+    await callback.message.answer("выберите блюдо", 
+                reply_markup=  await get_products_kb(category_id))
+    
+@router.callback_query(F.data.startswith('buy_'))
+async def category(callback: CallbackQuery):
+    await callback.message.answer()
+    
+
+@router.callback_query(F.data.startswith('product_'))
+async def product(callback: CallbackQuery):
+    product_id = callback.data.split('_')[1]
+    food = await get_food_by_id(product_id)
+    if food.img.startswith('http') or food.img.startswith('AgAC'):
+        image = food.img
+    else:
+        image = FSInputFile(food.img)
+    await callback.message.answer_photo(image, caption=f"Название: {food.name}\nОписание: {food.description}\nЦена: {food.price}\nСостав {food.component}", reply_markup= await back_kb(food.category_id))
+
+
+
+@router.callback_query(F.data.startswith('food_'))
+async def product(callback: CallbackQuery):
+    product_id = callback.data.split('_')[1]
+    food = await get_food_by_id(product_id)
+    if food.img.startswith('http') or food.img.startswith('AgAC'):
+        image = food.img
+    else:
+        image = FSInputFile(food.img)
+    await callback.message.answer_photo(image, caption=f"Название: {food.name}\nОписание: {food.description}\nЦена: {food.price}\nСостав {food.component}",reply_markup= await back_kb(food.category_id))
+    
+
+
+
+# @router.callback_query(F.data.startswith('category_'))
+# async def send_random_value(callback: CallbackQuery):
+#     data = callback.data.split('_')[1]
+#     await callback.message.answer(f'вы выбрали категорию: {data}',reply_markup=await get_categorys_kb())
+
 
 # @router.callback_query(F.data == 'чечевица')
 # async def send_random_value(callback: CallbackQuery):
