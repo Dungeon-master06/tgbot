@@ -38,6 +38,15 @@ async def get_foods_kb():
         ))
     return builder.adjust(2).as_markup()
 
+async def get_foods_kb2():
+    foods = await get_foods()
+    builder = InlineKeyboardBuilder()
+    for food in foods:
+        builder.add(InlineKeyboardButton(
+            text= food.name , callback_data=f'food2_{food.id}'
+        ))
+    return builder.adjust(2).as_markup()
+
 async def get_products_kb(category_id):
     products = await get_foods_by_category(category_id)
     builder = InlineKeyboardBuilder()
@@ -53,11 +62,22 @@ async def get_products_kb(category_id):
 async def back_kb(category_id):
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text='Купить',callback_data=f'buy_{category_id}'))
-    builder.add(InlineKeyboardButton(text='Назад к категориям',callback_data=f'back_{category_id}'))
+    builder.add(InlineKeyboardButton(text='Назад к блюдам',callback_data=f'back_{category_id}'))
     builder.add(InlineKeyboardButton(text='выбрать категории',callback_data=f'back'))
     return builder.adjust(2).as_markup()
 
 
+async def yes_no_kb(food_id):
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text='Да',callback_data=f'yes_{food_id}'))
+    builder.add(InlineKeyboardButton(text='Нет',callback_data=f'no'))
+    return builder.adjust(2).as_markup()
+
+async def yes_no_kb2(category_id):
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(text='Да',callback_data=f'yes2_{category_id}'))
+    builder.add(InlineKeyboardButton(text='Нет',callback_data=f'no2'))
+    return builder.adjust(2).as_markup()
 
 
 

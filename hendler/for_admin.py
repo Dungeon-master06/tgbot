@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from database.querysets import *
 from aiogram.filters import Command
 from aiogram.fsm.state import StatesGroup, State
-from hendler.keyboards import get_categories_kb2
+from hendler.keyboards import *
 
 
 admin_router = Router()
@@ -105,3 +105,41 @@ async def add_food_category(callback: CallbackQuery, state: FSMContext):
     await callback.answer('Еда добавлена')
     await state.clear()
     
+@admin_router.message(Command('delete_food'))
+async def delete_food(message: Message):
+    await message.answer('Выберите блюдо для удаления:', reply_markup= await get_foods_kb2())
+
+@admin_router.callback_query(F.data.startswith('food2_'))
+async def delete_food_callback(callback: CallbackQuery):
+    food_id = callback.data.split('_')[1]
+    await callback.message.answer(f"Вы действительно хотите удалить это блюдо?", reply_markup= await yes_no_kb(food_id))
+
+@admin_router.callback_query(F.data.startswith('yes_'))
+async def delete_food_callback(callback: CallbackQuery):
+    food_id = callback.data.split('_')[1]
+    await delete_food_db(food_id)
+    await callback.message.answer('Блюдо удалено')
+
+@admin_router.callback_query(F.data.startswith('no'))
+async def delete_food_callback(callback: CallbackQuery):
+    await callback.message.delete()
+
+@admin_router.message(Command('delete_category'))
+async def delete_category(message: Message):
+    await message.answer('Выберите категорию для удаления:', reply_markup= await get_categories_kb2())
+
+@admin_router.callback_query(F.data.startswith('category2_'))
+async def delete_category_callback(callback: CallbackQuery):
+    category_id = callback.data.split('_')[1]
+    await callback.message.answer(f'Вы действительно хотите удалить эту категорию?', reply_markup= await yes_no_kb2(category_id))
+
+@admin_router.callback_query(F.data.startswith('yes2_'))
+async def delete_category_callback(callback: CallbackQuery):
+    category_id = callback.data.split('_')[1]
+    await delete_category_db(category_id)
+    await callback.message.answer('Категория удалена')
+
+@admin_router.callback_query(F.data.startswith('no2'))
+async def delete_food_callback(callback: CallbackQuery):
+    await callback.message.delete()
+

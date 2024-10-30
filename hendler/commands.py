@@ -58,7 +58,7 @@ async def product(callback: CallbackQuery):
         image = food.img
     else:
         image = FSInputFile(food.img)
-    await callback.message.answer_photo(image, caption=f"Название: {food.name}\nОписание: {food.description}\nЦена: {food.price}\nСостав {food.component}", reply_markup= await back_kb(food.category_id))
+    await callback.message.answer_photo(image, caption=f"Название: {food.name}\nОписание: {food.description}\nГраммы: {food.gramm}\nСостав: {food.component}\nЦена: {food.price} ₽ ", reply_markup= await back_kb(food.category_id))
 
 
 
@@ -70,8 +70,12 @@ async def product(callback: CallbackQuery):
         image = food.img
     else:
         image = FSInputFile(food.img)
-    await callback.message.answer_photo(image, caption=f"Название: {food.name}\nОписание: {food.description}\nЦена: {food.price}\nСостав {food.component}",reply_markup= await back_kb(food.category_id))
+    await callback.message.answer_photo(image, caption=f"Название: {food.name}\nОписание: {food.description}\nЦена: {food.price}\nСостав: {food.component}",reply_markup= await back_kb(food.category_id))
     
+
+
+
+
 
 
 

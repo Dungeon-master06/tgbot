@@ -41,8 +41,13 @@ async def add_food_db(data):
         await session.refresh(data)
         return data
 
-async def delete_food_db(data):
+async def delete_food_db(food_id):
     async with async_session() as session:
-        await session.execute(delete(Foods).where(Foods.id == data.id))
+        await session.execute(delete(Foods).where(Foods.id == food_id))
         await session.commit()
-        return data
+
+async def delete_category_db(category_id):
+    async with async_session() as session:
+        await session.execute(delete(Categoryfoods).where(Categoryfoods.id == category_id))
+        await session.commit()
+        
